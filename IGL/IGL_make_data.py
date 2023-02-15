@@ -54,8 +54,6 @@ for k in range(subgoal_num+1):
         new_next_eef_pos = traj_interpolation_pos(data_concat[i]["next_obervation"][idx1, :3],data_concat[i]["next_obervation"][idx1, :3], coef)  # robot pos
         new_next_grip_pos = traj_interpolation_pos(data_concat[i]["next_obervation"][idx1, 9:11],data_concat[i]["next_obervation"][idx1, 9:11], coef)
         new_sugoal         = np.ones(shape=(new_grip_pos.shape[0],1)) * k
-        print(new_eef_pos.shape,new_obj_pos.shape,new_grip_pos.shape,new_obj_quat.shape,new_goal_pos.shape,new_next_eef_pos.shape,new_next_grip_pos.shape)
-        raise
 
         eef_pos.append(new_eef_pos)
         obj_pos.append(new_obj_pos)
@@ -66,15 +64,12 @@ for k in range(subgoal_num+1):
         next_grip_pos.append(new_next_grip_pos)
         sg.append(new_sugoal)
 
-raise
 #====================================================중간중간 한번씩 더 쪼개줘
 
 x_buff = []
 y_buff = []
 coefs = np.linspace(0,1,3,endpoint=True)
 for k in range(subgoal_num+1):
-    print(len(sg))
-    print(sg[40])
     idxs = [i for i in range(len(sg)) if sg[i][0] == k]
     for i in range(len(idxs) - 1):
         for j in range(i + 1, len(idxs)):

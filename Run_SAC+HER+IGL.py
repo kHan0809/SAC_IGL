@@ -51,7 +51,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # Experiment
     parser.add_argument("--policy", default="SAC+HER+IGL")  # Policy name
-    parser.add_argument("--env", default="FetchPush-v1")  # OpenAI gym environment name
+    parser.add_argument("--env", default="FetchReach-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
     parser.add_argument("--seed", default=2, type=int)  # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--action_start_steps", default=5e3, type=int)  # How often (time steps) we evaluate
     parser.add_argument("--update_start_steps", default=2e3, type=int)  # How often (time steps) we evaluate
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     # Initialize policy
     agent = SAC_HER(env_params, env, args)
-    igl   = IGL(13, 3, args)
+    igl   = IGL(16, 5, args)
     igl.load_model(os.getcwd() + '/IGL/IGL_model/', args.env)
 
     observation, evaluations = env.reset(), []

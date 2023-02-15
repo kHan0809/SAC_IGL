@@ -27,11 +27,12 @@ class make_subgoal():
         if self.env_name == "FetchReach-v1":
             return self.subgoal
         if self.env_name == "FetchPush-v1":
-            target = np.array([state['observation'][3], state['observation'][4], state['observation'][5] + 0.055])
-            if np.linalg.norm(target - state['observation'][:3]) > 0.010 and self.subgoal == 0:
+            target = np.array([state[3], state[4], state[5] + 0.055])
+            if np.linalg.norm(target - state[:3]) > 0.010 and self.subgoal == 0:
                 pass
-            elif np.linalg.norm(target - state['observation'][:3]) < 0.010 and self.subgoal == 0:
+            elif np.linalg.norm(target - state[:3]) < 0.010 and self.subgoal == 0:
                 self.subgoal += 1
+            print(self.subgoal)
             return self.subgoal
         if self.env_name == "FetchPickAndPlace-v1":
             target = np.array([state[3], state[4], state[5] + 0.055])
@@ -64,7 +65,7 @@ class IGL(object):
         total_len = x.shape[0]
         idx = np.array(list(range(total_len)),dtype=int)
         split_len = round(total_len*0.95)
-        print(split_len)
+        print("TrainSet len : ", split_len)
 
         choice = np.random.choice(total_len, split_len, replace=False)
         train_idx = idx[choice]
@@ -81,10 +82,10 @@ class IGL(object):
 
 
     def select_action(self,obs,subgoal,evaluate=True):
-        if subgoal == 0:
-            target = copy.deepcopy(obs[3:6])
-            target[2] = target[2] + 0.055
-            return reach_control(obs[:3],target)
+        # if subgoal == 0:
+        #     target = copy.deepcopy(obs[3:6])
+        #     target[2] = target[2] + 0.055
+        #     return reach_control(obs[:3],target)
         # if subgoal == 1:
         #     return reach_control(obs[:3],obs[3:6],grip_close=True)
 
@@ -92,11 +93,7 @@ class IGL(object):
         state = torch.FloatTensor(np.concatenate((obs[0:6], obs[9:15], obs[-3:], subgoal), axis=0)).to(self.device).unsqueeze(0)
         next_pos = self.actor(state).detach().cpu().numpy().flatten()
         pos_action  = (next_pos[:3] - obs[:3]) * 10
-        # print(obs.shape,obs)
-        # print(obs[9:11] - next_pos[3:])
         grip_action = np.sum(next_pos[3:] - obs[9:11]).reshape(1)/2
-        # grip_action = np.array([-0.01]).reshape(1)
-        # print(obs[9:11] - next_pos[3:], grip_action)
 
 
 
