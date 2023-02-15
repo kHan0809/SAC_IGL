@@ -32,7 +32,7 @@ class make_subgoal():
                 pass
             elif np.linalg.norm(target - state[:3]) < 0.010 and self.subgoal == 0:
                 self.subgoal += 1
-            print(self.subgoal)
+            # print(self.subgoal)
             return self.subgoal
         if self.env_name == "FetchPickAndPlace-v1":
             target = np.array([state[3], state[4], state[5] + 0.055])
@@ -43,7 +43,7 @@ class make_subgoal():
                 self.subgoal += 1
             elif np.linalg.norm(state[3:6] - state[:3]) < 0.010 and self.subgoal == 1:
                 self.subgoal += 1
-            print(self.subgoal)
+            # print(self.subgoal)
             return self.subgoal
 
 def reach_control(current_pos, target_pos, grip_close=False):
@@ -103,8 +103,9 @@ class IGL(object):
         self.actor.eval()
         state = torch.FloatTensor(np.concatenate((obs[0:6], obs[9:15], goal, subgoal), axis=0)).to(self.device).unsqueeze(0)
         next_pos = self.actor(state).detach().cpu().numpy().flatten()
-        action = (next_pos - obs[:3])*3
-        return np.concatenate((action, np.array([0.0])))
+        pos_action  = (next_pos[:3] - obs[:3]) * 10
+        grip_action = np.sum(next_pos[3:] - obs[9:11]).reshape(1) / 2
+        return np.concatenate((pos_action, grip_action))
 
 
 

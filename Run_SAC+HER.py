@@ -4,7 +4,6 @@ import gym
 import argparse
 import os
 from model.SAC_HER import SAC_HER
-from model.IGL import IGL, make_subgoal
 
 
 def get_env_params(env):
@@ -95,20 +94,15 @@ if __name__ == "__main__":
 
     # Initialize policy
     agent = SAC_HER(env_params, env, args)
-    igl   = IGL(16, 5, args)
-    igl.load_model(os.getcwd() + '/IGL/IGL_model/', args.env)
 
     observation, evaluations = env.reset(), []
     obs, ag, g = observation['observation'], observation['achieved_goal'], observation['desired_goal']
     ep_obs, ep_ag, ep_g, ep_actions = [], [], [], []
-    subgoal_class = make_subgoal(args.env)
     for t in range(int(args.max_timesteps)):
-        sg = subgoal_class.get_subgoal(obs)
         if args.action_start_steps > t:
             action = env.action_space.sample() / max_action  # Sample random action
         else:
             action = agent.select_action(agent._preproc_inputs(obs, g))  # Sample action from policy
-        action += igl.noise_action(obs,g,sg)
 
         observation_new, _, done, info = env.step(action * max_action)  # Step
         obs_new, ag_new = observation_new['observation'], observation_new['achieved_goal']
@@ -135,7 +129,6 @@ if __name__ == "__main__":
 
             observation = env.reset()
             obs, ag, g = observation['observation'], observation['achieved_goal'], observation['desired_goal']
-            subgoal_class.__init__(args.env)
             ep_obs, ep_ag, ep_g, ep_actions = [], [], [], []
 
         # Evaluate episode
