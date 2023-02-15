@@ -9,7 +9,7 @@ from IGL_utils import get_args, concat_all_data
 
 args  = get_args()
 data_concat = concat_all_data(args.env)
-
+raise
 eef_pos, obj_pos, grip_pos, obj_quat, goal_pos, next_eef_pos, next_grip_pos, sg = [], [], [], [], [], [], [], []
 coefs       = np.linspace(0,1,3,endpoint=True)
 subgoal_num = data_concat[0]["subgoal"][-1][0]

@@ -34,11 +34,8 @@ def get_epi():
     next_state, reward, done, info = env.step(a)  # Step the environoment with the sampled random action
     epi_next_obs.append(np.concatenate((next_state['observation'],next_state['desired_goal']),axis=0))
     epi_subgoal.append(copy.deepcopy(subgoal))
-    print("===================")
-    print(state['observation'][9:11],a,subgoal)
+    # print(state['observation'],state['observation'].shape, a.shape, subgoal)
     state=next_state
-    print(state['observation'][9:11],a,subgoal)
-
 
     env.render()
     if info['is_success']:
@@ -53,7 +50,7 @@ def get_epi():
 if __name__ == "__main__":
 
   total_epi = []
-  sample_num = "1231232132"
+  sample_num = "0"
   traj_num = 0 # 이거 건들지마
   while True:
     epi = get_epi()
