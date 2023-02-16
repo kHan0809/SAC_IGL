@@ -8,10 +8,10 @@ def get_args():
   parser = argparse.ArgumentParser()
   parser.add_argument("--env", default="FetchReach-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
   parser.add_argument("--seed", default=0, type=int)  # Sets Gym, PyTorch and Numpy seeds
-  parser.add_argument("--hidden_dim", default=[256, 256])  # Target network update rate
+  parser.add_argument("--hidden_dim", default=[512, 256, 256])  # Target network update rate
   parser.add_argument("--batch_size", default=256, type=int)  # batch size
-  parser.add_argument("--epoch", default=201, type=int)  # batch size
-  parser.add_argument("--lr", default=3e-5, type=float)  # batch size
+  parser.add_argument("--epoch", default=801, type=int)  # batch size
+  parser.add_argument("--lr", default=3e-4, type=float)  # batch size
 
   args = parser.parse_args()
   return args

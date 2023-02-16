@@ -92,7 +92,7 @@ class IGL(object):
         self.actor.eval()
         state = torch.FloatTensor(np.concatenate((obs[0:6], obs[9:15], obs[-3:], subgoal), axis=0)).to(self.device).unsqueeze(0)
         next_pos = self.actor(state).detach().cpu().numpy().flatten()
-        pos_action  = (next_pos[:3] - obs[:3]) * 10
+        pos_action  = (next_pos[:3] - obs[:3]) * 5
         grip_action = np.sum(next_pos[3:] - obs[9:11]).reshape(1)/2
 
 
@@ -160,6 +160,6 @@ class IGL_mlp(nn.Module):
 def mlp(sizes, activation, output_activation=nn.Identity()):
     layers = []
     for j in range(len(sizes)-1):
-        act = activation if j < len(sizes)-2 else output_activation
+        act = activation if j < len(sizes)-1 else output_activation #원래 - 2가 맞음
         layers += [nn.Linear(sizes[j], sizes[j+1]),nn.BatchNorm1d(sizes[j+1]), act]
     return nn.Sequential(*layers)

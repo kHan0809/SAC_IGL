@@ -47,12 +47,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     # Experiment
-    parser.add_argument("--policy", default="SAC+HER+IGL")  # Policy name
+    parser.add_argument("--policy", default="SAC+HER")  # Policy name
     parser.add_argument("--env", default="FetchPush-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
     parser.add_argument("--seed", default=2, type=int)  # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--action_start_steps", default=5e3, type=int)  # How often (time steps) we evaluate
     parser.add_argument("--update_start_steps", default=2e3, type=int)  # How often (time steps) we evaluate
-    parser.add_argument("--eval_freq", default=5e3, type=int)  # How often (time steps) we evaluate
+    parser.add_argument("--eval_freq", default=2e3, type=int)  # How often (time steps) we evaluate
     parser.add_argument("--max_timesteps", default=3e6, type=int)  # Max time steps to run environment
     parser.add_argument("--save_model", default=False)  # Save model and optimizer parameters
     parser.add_argument("--load_model", default="")  # Model load file name, "" doesn't load, "default" uses file_name
