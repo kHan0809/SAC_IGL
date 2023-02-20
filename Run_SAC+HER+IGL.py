@@ -53,7 +53,7 @@ if __name__ == "__main__":
     parser.add_argument("--seed", default=2, type=int)  # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--action_start_steps", default=5e3, type=int)  # How often (time steps) we evaluate
     parser.add_argument("--update_start_steps", default=2e3, type=int)  # How often (time steps) we evaluate
-    parser.add_argument("--eval_freq", default=5e3, type=int)  # How often (time steps) we evaluate
+    parser.add_argument("--eval_freq", default=2e3, type=int)  # How often (time steps) we evaluate
     parser.add_argument("--max_timesteps", default=3e6, type=int)  # Max time steps to run environment
     parser.add_argument("--save_model", default=False)  # Save model and optimizer parameters
     parser.add_argument("--load_model", default="")  # Model load file name, "" doesn't load, "default" uses file_name
@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("--tau", default=0.005)  # Target network update rate
     parser.add_argument("--alpha", default=0.2)
     parser.add_argument("--hidden_dim", default=[256, 256])  # Target network update rate
+    parser.add_argument("--hidden_dim_igl", default=[1024, 256, 256])  # Target network update rate
     parser.add_argument("--automatic_entropy_tuning", default=False)  # Target network update rate
     parser.add_argument("--lr", default=3e-4, type=float)  # batch size
     # Her
@@ -108,7 +109,7 @@ if __name__ == "__main__":
             action = env.action_space.sample() / max_action  # Sample random action
         else:
             action = agent.select_action(agent._preproc_inputs(obs, g))  # Sample action from policy
-        action += igl.noise_action(obs,g,sg)
+        action += igl.noise_action(obs,g,sg,action)
 
         observation_new, _, done, info = env.step(action * max_action)  # Step
         obs_new, ag_new = observation_new['observation'], observation_new['achieved_goal']

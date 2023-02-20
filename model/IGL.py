@@ -58,8 +58,9 @@ class IGL(object):
     def __init__(self, state_dim, next_state_dim, args):
         self.args = args
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.actor = IGL_mlp(state_dim,next_state_dim,args.hidden_dim).to(self.device)
+        self.actor = IGL_mlp(state_dim,next_state_dim,args.hidden_dim_igl).to(self.device)
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=self.args.lr)
+        self.i = 0
 
     def dataset_split(self,x,y, split=False):
         total_len = x.shape[0]
@@ -82,30 +83,39 @@ class IGL(object):
 
 
     def select_action(self,obs,subgoal,evaluate=True):
-        # if subgoal == 0:
+        # if (subgoal == 0) & (self.i < 2):
+        #     self.i += 1
+        #     print(self.i)
+        #     return np.array([0.0, 0.0, 1.0, -1.0])
+        # elif (subgoal == 0) & (self.i>= 2):
         #     target = copy.deepcopy(obs[3:6])
         #     target[2] = target[2] + 0.055
         #     return reach_control(obs[:3],target)
+        # else:
+        self.i = 0
         # if subgoal == 1:
         #     return reach_control(obs[:3],obs[3:6],grip_close=True)
-
+        print(subgoal)
         self.actor.eval()
         state = torch.FloatTensor(np.concatenate((obs[0:6], obs[9:15], obs[-3:], subgoal), axis=0)).to(self.device).unsqueeze(0)
         next_pos = self.actor(state).detach().cpu().numpy().flatten()
-        pos_action  = (next_pos[:3] - obs[:3]) * 5
+        pos_action  = (next_pos[:3] - obs[:3]) * 10
         grip_action = np.sum(next_pos[3:] - obs[9:11]).reshape(1)/2
 
 
 
         return np.concatenate((pos_action, grip_action))
 
-    def noise_action(self,obs,goal,subgoal):
+    def noise_action(self,obs,goal,subgoal,action):
         self.actor.eval()
         state = torch.FloatTensor(np.concatenate((obs[0:6], obs[9:15], goal, subgoal), axis=0)).to(self.device).unsqueeze(0)
         next_pos = self.actor(state).detach().cpu().numpy().flatten()
-        pos_action  = (next_pos[:3] - obs[:3]) * 10
+        pos_action  = (next_pos[:3] - obs[:3]) * 3
         grip_action = np.sum(next_pos[3:] - obs[9:11]).reshape(1) / 2
-        return np.concatenate((pos_action, grip_action))
+        igl_noise = np.concatenate((pos_action, grip_action))
+        igl_noise = igl_noise*(0.1*np.linalg.norm(action)/np.linalg.norm(igl_noise))
+
+        return igl_noise
 
 
 

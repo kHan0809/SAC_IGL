@@ -8,11 +8,11 @@ envs=(
 #    "FetchPickAndPlace-v1"
 	)
 
-for ((i=0;i<5;i+=1))
+for ((i=6;i<7;i+=1))
 do 
 	for env in ${envs[*]}
 	do
-		python Run_SAC.py \
+		python Run_SAC+HER+IGL.py \
 		--env $env \
 		--seed $i
 	done

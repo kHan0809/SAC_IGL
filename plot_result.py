@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
 	envs = [
 		# "FetchReach-v1",
-		"FetchReach-v1",
+		"FetchPush-v1",
 	]
 	p_dir = "./results/"
 	ext = ".npy"
