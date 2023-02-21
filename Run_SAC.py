@@ -103,8 +103,10 @@ if __name__ == "__main__":
 		if agent.buffer.size > args.update_start_steps:
 			agent.update_parameters()
 
+
 		if done:
 			state, episode_reward, episode_steps = env.reset(), 0, 0
+			agent._soft_update()
 
 		# Evaluate episode
 		if (t + 1) % args.eval_freq == 0:

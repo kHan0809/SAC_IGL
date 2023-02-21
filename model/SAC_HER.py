@@ -20,7 +20,7 @@ class SAC_HER(object):
         self.state_dim  = env_params['obs'] + env_params['goal']
         self.action_dim = env_params['action']
         self.clip_obs   = 200.
-
+        self.delay = 0
         self.buffer_size = args.max_timesteps
         self.batch_size  = args.batch_size
 
@@ -88,17 +88,17 @@ class SAC_HER(object):
         # Optimize the critic
         critic_loss.backward()
         self.critic_optimizer.step()
+        if self.delay % 2 == 0:
+            for p in self.critic.parameters():
+                p.requires_grad = False
 
-        for p in self.critic.parameters():
-            p.requires_grad = False
+            self.policy_optim.zero_grad()
+            policy_loss = self.compute_loss_pi(state_batch, action_batch, next_state_batch, reward_batch)
+            policy_loss.backward()
+            self.policy_optim.step()
 
-        self.policy_optim.zero_grad()
-        policy_loss = self.compute_loss_pi(state_batch, action_batch, next_state_batch, reward_batch)
-        policy_loss.backward()
-        self.policy_optim.step()
-
-        for p in self.critic.parameters():
-            p.requires_grad = True
+            for p in self.critic.parameters():
+                p.requires_grad = True
 
 
         if self.automatic_entropy_tuning:
@@ -110,7 +110,9 @@ class SAC_HER(object):
             self.alpha = self.log_alpha.exp()
         else:
             pass
+        self.delay += 1
 
+    def _soft_update(self):
         with torch.no_grad():
             soft_update(self.critic_target, self.critic, self.tau)
 

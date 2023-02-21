@@ -133,6 +133,7 @@ if __name__ == "__main__":
             if t > args.update_start_steps:
                 for _ in range(env._max_episode_steps):
                     agent.update_parameters(args.batch_size)
+                agent._soft_update()
 
             observation = env.reset()
             obs, ag, g = observation['observation'], observation['achieved_goal'], observation['desired_goal']

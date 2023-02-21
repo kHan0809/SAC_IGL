@@ -22,6 +22,7 @@ class SAC(object):
         self.tau = args.tau
         self.alpha = args.alpha
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.delay = 0
 
         self.automatic_entropy_tuning = args.automatic_entropy_tuning
 
@@ -59,16 +60,17 @@ class SAC(object):
         critic_loss.backward()
         self.critic_optimizer.step()
 
-        for p in self.critic.parameters():
-            p.requires_grad = False
+        if self.delay%2 == 0:
+            for p in self.critic.parameters():
+                p.requires_grad = False
 
-        self.policy_optim.zero_grad()
-        policy_loss = self.compute_loss_pi(state_batch, action_batch, next_state_batch, reward_batch, done_batch)
-        policy_loss.backward()
-        self.policy_optim.step()
+            self.policy_optim.zero_grad()
+            policy_loss = self.compute_loss_pi(state_batch, action_batch, next_state_batch, reward_batch, done_batch)
+            policy_loss.backward()
+            self.policy_optim.step()
 
-        for p in self.critic.parameters():
-            p.requires_grad = True
+            for p in self.critic.parameters():
+                p.requires_grad = True
 
 
         if self.automatic_entropy_tuning:
@@ -80,7 +82,9 @@ class SAC(object):
             self.alpha = self.log_alpha.exp()
         else:
             pass
+        self.delay += 1
 
+    def _soft_update(self):
         with torch.no_grad():
             soft_update(self.critic_target, self.critic, self.tau)
 
