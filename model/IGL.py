@@ -83,16 +83,19 @@ class IGL(object):
 
 
     def select_action(self,obs,subgoal,evaluate=True):
-        # if (subgoal == 0) & (self.i < 2):
-        #     self.i += 1
-        #     print(self.i)
-        #     return np.array([0.0, 0.0, 1.0, -1.0])
-        # elif (subgoal == 0) & (self.i>= 2):
-        #     target = copy.deepcopy(obs[3:6])
-        #     target[2] = target[2] + 0.055
-        #     return reach_control(obs[:3],target)
-        # else:
-        self.i = 0
+        if (subgoal == 0) & (self.i < 2):
+            self.i += 1
+            print(self.i)
+            return np.array([0.0, 0.0, 1.0, -1.0])
+        elif (subgoal == 0) & (self.i>= 2):
+            target = copy.deepcopy(obs[3:6])
+            target[2] = target[2] + 0.055
+            return reach_control(obs[:3],target)
+        elif subgoal == 1:
+            target = copy.deepcopy(obs[3:6])
+            return reach_control(obs[:3],target, grip_close=True)
+
+
         # if subgoal == 1:
         #     return reach_control(obs[:3],obs[3:6],grip_close=True)
         print(subgoal)

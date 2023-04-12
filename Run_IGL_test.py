@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--policy", default="IGL")  # Policy name
-	parser.add_argument("--env", default="FetchPush-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
+	parser.add_argument("--env", default="FetchPickAndPlace-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
 	parser.add_argument("--seed", default=1, type=int)  # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--hidden_dim", default=[256, 256])  # Target network update rate
 	parser.add_argument("--hidden_dim_igl", default=[1024, 256, 256])  # Target network update rate
