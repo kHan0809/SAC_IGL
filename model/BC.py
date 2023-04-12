@@ -8,6 +8,7 @@ import os
 import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
+import pickle
 
 class CustomDataSet(Dataset):
     def __init__(self,numpy_x,numpy_y):
@@ -43,9 +44,23 @@ class BC(object):
         self.train_loader = DataLoader(train_set, shuffle=True,batch_size=self.args.batch_size)
         self.test_loader  = DataLoader(test_set, shuffle=True,batch_size =self.args.batch_size)
 
+    def dataset_all(self,x,y):
+        train_set = CustomDataSet(x, y)
+        self.train_loader = DataLoader(train_set, shuffle=True,batch_size=self.args.batch_size)
 
+    def pick2np(self,env_name):
+        for pickle_data in os.listdir(os.getcwd() + '/../Demo/Demo_data'):
+            if env_name in pickle_data:
+                with open(os.getcwd() + '/../Demo/Demo_data/' + pickle_data, 'rb') as f:
+                    p_data = pickle.load(f)
 
-
+        obs_tmp,act_tmp = [], []
+        for i in range(len(p_data)):
+            obs_tmp.append(np.array(p_data[i]['observation']))
+            act_tmp.append(np.array(p_data[i]['action']))
+        obs_np = np.concatenate(obs_tmp, axis=0)
+        act_np = np.concatenate(act_tmp, axis=0)
+        return obs_np, act_np
 
     def select_action(self,obs,evaluate=True):
         self.actor.eval()
@@ -54,7 +69,7 @@ class BC(object):
 
         return action
 
-    def train(self):
+    def train(self,save=False):
         for step in range(self.args.epoch):
             check_train_loss, check_test_loss = 0, 0
             for batch_idx, (input,label) in enumerate(self.train_loader):
@@ -73,7 +88,8 @@ class BC(object):
                 check_test_loss += test_loss.item()
             if step % 10 == 0:
                 print("step : ", step ,"train loss :", check_train_loss, "test loss : ", check_test_loss)
-        self.save_model(os.getcwd()+'/BC_model/', self.args.env)
+        if save:
+            self.save_model(os.getcwd()+'/BC_model/', self.args.env)
     def test(self):
         self.actor.eval()
         check_train_loss, check_test_loss = 0, 0
