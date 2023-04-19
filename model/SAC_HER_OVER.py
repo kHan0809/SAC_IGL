@@ -149,6 +149,7 @@ class SAC_HER_OVER(object):
 
         #BC_loss
         demo_state, demo_action = next(iter(self.train_loader))
+        demo_state = (demo_state - self.state_mean) / (self.state_std + self.eps)
         demo_state, demo_action = 	demo_state.type(torch.FloatTensor).to(self.device), demo_action.type(torch.FloatTensor).to(self.device)
 
         pi_demo, log_pi_demo = self.policy(demo_state)
@@ -183,6 +184,8 @@ class SAC_HER_OVER(object):
         return obs_np, act_np
 
     def dataset_all(self,x,y):
+        self.state_mean, self.state_std, self.eps = x.mean(axis=0), x.std(axis=0), 1e-6
+        # x = (x - self.state_mean) / (self.state_std + self.eps)
         train_set = CustomDataSet(x, y)
         self.train_loader = DataLoader(train_set, shuffle=True,batch_size=self.bc_batch_size)
 

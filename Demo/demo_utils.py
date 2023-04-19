@@ -5,7 +5,7 @@ import argparse
 
 def get_args():
   parser = argparse.ArgumentParser()
-  parser.add_argument("--env", default="FetchReach-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
+  parser.add_argument("--env", default="FetchPickAndPlace-v1", help = "FetchReach-v1 FetchPush-v1 FetchPickAndPlace-v1")  # OpenAI gym environment name
   parser.add_argument("--seed", default=0, type=int)  # Sets Gym, PyTorch and Numpy seeds
 
   args = parser.parse_args()
@@ -42,7 +42,7 @@ def reach_control(current_pos, target_pos, grip_close=False):
     if grip_close:
         a = np.concatenate((a, np.array([-0.01])), axis=0)
     else:
-        a = np.concatenate((a, np.array([1.0])), axis=0)
+        a = np.concatenate((a, np.array([0.02])), axis=0)
     return a
 
 def selection_control(state,i,env_name,subgoal):

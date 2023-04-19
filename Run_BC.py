@@ -44,7 +44,7 @@ if __name__ == "__main__":
 	parser.add_argument("--hidden_dim", default=[256, 256])  # Target network update rate
 	parser.add_argument("--batch_size", default=256, type=int)  # batch size
 	parser.add_argument("--epoch", default=150, type=int)  # batch size
-	parser.add_argument("--lr", default=5e-5, type=float)  # batch size
+	parser.add_argument("--lr", default=1e-3, type=float)  # batch size
 	parser.add_argument("--render", default=True)
 	args = parser.parse_args()
 
@@ -67,5 +67,7 @@ if __name__ == "__main__":
 	# Initialize policy
 	agent = BC(state_dim,action_dim,args)
 	print(os.getcwd()+'/model/BC_model/', args.env)
+	obs_np, act_np = agent.pick2np(args.env,True)
+	agent.dataset_split(obs_np,act_np)
 	agent.load_model(os.getcwd()+'/model/BC_model/', args.env)
 	eval_policy(agent, args.env, args.seed, render=args.render)

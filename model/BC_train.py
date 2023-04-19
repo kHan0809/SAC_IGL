@@ -16,9 +16,9 @@ if __name__ == "__main__":
 	parser.add_argument("--env", default="FetchPickAndPlace-v1")  # OpenAI gym environment name
 	parser.add_argument("--seed", default=0, type=int)  # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--hidden_dim", default=[256, 256])  # Target network update rate
-	parser.add_argument("--batch_size", default=16, type=int)  # batch size
-	parser.add_argument("--epoch", default=500, type=int)  # batch size
-	parser.add_argument("--lr", default=5e-5, type=float)  # batch size
+	parser.add_argument("--batch_size", default=64, type=int)  # batch size
+	parser.add_argument("--epoch", default=300, type=int)  # batch size
+	parser.add_argument("--lr", default=1e-3, type=float)  # batch size
 	parser.add_argument("--render", default=True)
 	args = parser.parse_args()
 
@@ -44,5 +44,6 @@ if __name__ == "__main__":
 
 
 	obs_np,act_np = agent.pick2np(args.env)
+	print(obs_np.shape,act_np.shape)
 	agent.dataset_split(obs_np,act_np)
 	agent.train(save=True)

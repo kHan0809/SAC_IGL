@@ -4,8 +4,8 @@
 
 envs=(
 #    "FetchReach-v1"
-#    "FetchPush-v1"
-    "FetchPickAndPlace-v1"
+    "FetchPush-v1"
+#    "FetchPickAndPlace-v1"
 	)
 
 for ((i=0;i<5;i+=1))

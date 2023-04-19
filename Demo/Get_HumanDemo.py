@@ -37,7 +37,7 @@ def get_epi():
     # print(state['observation'],state['observation'].shape, a.shape, subgoal)
     state=next_state
 
-    env.render()
+    # env.render()
     if info['is_success']:
       success_count += 1
       if success_count >= 5:
@@ -55,15 +55,20 @@ if __name__ == "__main__":
   while True:
     epi = get_epi()
     for i in range(10):
-      save_flag=input("Do you want to save this episode?")
+
+      save_flag = 'y'
+      # save_flag = input()
       if save_flag == ("y" or "Y"):
-        total_epi.append(epi)
-        traj_num += 1
+        if len(epi['observation']) >= 12:
+          total_epi.append(epi)
+          traj_num += 1
         break
       elif save_flag == ("n" or "N"):
         break
       else:
         continue
+    if traj_num == 1000:
+      break
     print(traj_num)
     with open('./Demo_data/data_'+args.env+"_"+sample_num+'.pickle', 'wb') as f:
       pickle.dump(total_epi, f, pickle.HIGHEST_PROTOCOL)
