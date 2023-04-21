@@ -3,7 +3,6 @@ import torch
 import gym
 import argparse
 import os
-import d4rl
 
 import matplotlib.pyplot as plt
 if __name__ == "__main__":
@@ -15,8 +14,8 @@ if __name__ == "__main__":
 
 	envs = [
 		# "FetchReach-v1",
-		# "FetchPush-v1",
-		"FetchPickAndPlace",
+		 "IGL_FetchPush-v1",
+		# "IGL_FetchPickAndPlace-v1",
 	]
 	p_dir = "./results/"
 	ext = ".npy"
